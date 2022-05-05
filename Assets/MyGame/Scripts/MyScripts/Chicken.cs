@@ -10,12 +10,24 @@ public class Chicken : MonoBehaviour
     public LayerMask wall;
     public Transform circleTransform;
     public float circleRadius;
+    public GameObject egg;
+    bool eggSpawned;
 
     private void Start()
     {
         rbChicken = GetComponent<Rigidbody>();
         Turn();
         moving = true;
+        eggSpawned = false;
+    }
+
+    private void Update()
+    {
+        if (transform.position.y >= -0.8f)
+        {
+            SpawnEgg();
+            Destroy(gameObject);
+        }
     }
 
     private void FixedUpdate()
@@ -29,7 +41,7 @@ public class Chicken : MonoBehaviour
     void Move()
     {
         var localVelocity = transform.InverseTransformDirection(rbChicken.velocity);
-        localVelocity = new Vector3(0, rbChicken.velocity.y, moveSpeed);
+        localVelocity = new Vector3(0, 0, moveSpeed);
         rbChicken.velocity = transform.TransformDirection(localVelocity);
     }
 
@@ -55,7 +67,14 @@ public class Chicken : MonoBehaviour
 
     void SpawnEgg()
     {
-
+        if (!eggSpawned)
+        {
+            Debug.Log("Spawn");
+            eggSpawned = true;
+            Instantiate(egg, transform.position, Quaternion.identity);
+            Stand();
+        }
+        
     }
 
     private void OnCollisionEnter(Collision collision)
